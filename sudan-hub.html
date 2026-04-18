@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sudan Humanitarian Data Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{--bg:#06080f;--surface:#0d1117;--card:#111827;--card2:#161d2c;--red:#e63946;--amber:#f4a261;--teal:#2ec4b6;--blue:#457b9d;--text:#dde1e7;--muted:#6b7280;--border:rgba(255,255,255,0.07);--mono:'IBM Plex Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);pointer-events:none;z-index:9999;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,8,15,0.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:.7rem;}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pdot 2s infinite;}
+@keyframes pdot{0%,100%{box-shadow:0 0 6px var(--red);}50%{box-shadow:0 0 18px var(--red),0 0 32px rgba(230,57,70,.4);}}
+.nav-logo-text{font-family:var(--mono);font-size:.76rem;font-weight:600;letter-spacing:.05em;}
+.nav-links{display:flex;gap:.2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.82rem;font-weight:600;padding:.4rem .9rem;border-radius:8px;transition:all .2s;}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05);}
+.nav-live{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.7rem;color:var(--teal);border:1px solid rgba(46,196,182,.3);padding:.3rem .8rem;border-radius:6px;background:rgba(46,196,182,.06);}
+.live-blink{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@media(max-width:900px){.nav-links{display:none;}}
+
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 2rem 2rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 20% 40%,rgba(230,57,70,.08) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 70%,rgba(46,196,182,.05) 0%,transparent 60%);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:1;}
+.hero-tag{font-family:var(--mono);font-size:.7rem;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+.hero-tag::before{content:'';display:inline-block;width:24px;height:1px;background:var(--red);}
+.hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;line-height:1.15;margin-bottom:.8rem;color:#fff;}
+.hero h1 em{font-style:normal;color:var(--red);}
+.hero-sub{font-size:.92rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn{padding:.75rem 1.8rem;border-radius:10px;font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(230,57,70,.4);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-outline:hover{border-color:var(--muted);color:var(--text);}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.hstat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;position:relative;overflow:hidden;}
+.hstat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.hstat.r::before{background:var(--red);}.hstat.a::before{background:var(--amber);}.hstat.t::before{background:var(--teal);}.hstat.b::before{background:var(--blue);}
+.hstat-num{font-family:var(--mono);font-size:1.6rem;font-weight:600;line-height:1;margin-bottom:.3rem;}
+.hstat.r .hstat-num{color:var(--red);}.hstat.a .hstat-num{color:var(--amber);}.hstat.t .hstat-num{color:var(--teal);}.hstat.b .hstat-num{color:var(--blue);}
+.hstat-lbl{font-size:.75rem;color:var(--muted);font-weight:600;line-height:1.4;}
+.hstat-src{font-family:var(--mono);font-size:.58rem;color:rgba(255,255,255,.18);margin-top:.4rem;}
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:2rem;}}
+
+.wrap{max-width:1100px;margin:0 auto;padding:5rem 2rem;}
+.sec-hd{margin-bottom:2.5rem;}
+.sec-tag{font-family:var(--mono);font-size:.68rem;color:var(--teal);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.6rem;}
+.sec-title{font-size:1.7rem;font-weight:800;color:#fff;}
+.sec-title span{color:var(--red);}
+.divider{width:40px;height:2px;background:var(--red);margin-top:.8rem;}
+
+.map-layout{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
+#map{height:480px;border-radius:16px;border:1px solid var(--border);overflow:hidden;}
+.map-side{display:flex;flex-direction:column;gap:1rem;}
+.map-legend{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;}
+.leg-title{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;font-weight:600;}
+.leg-item{display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;font-size:.8rem;}
+.leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.region-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;}
+.rgn{margin-bottom:.9rem;}
+.rgn-name{font-size:.88rem;font-weight:700;margin-bottom:.2rem;}
+.rgn-stat{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.4rem;}
+.bar-bg{height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:100px;}
+@media(max-width:900px){.map-layout{grid-template-columns:1fr;}}
+
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;transition:all .3s;}
+.sc:hover{border-color:rgba(230,57,70,.3);transform:translateY(-2px);}
+.sc-icon{font-size:1.8rem;margin-bottom:.8rem;}
+.sc-num{font-family:var(--mono);font-size:1.8rem;font-weight:600;color:#fff;margin-bottom:.3rem;}
+.sc-lbl{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.sc-trend{font-family:var(--mono);font-size:.66rem;margin-top:.4rem;}
+.up{color:var(--red);}.dn{color:var(--teal);}
+.chart-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;}
+.chart-title{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1.2rem;font-weight:600;}
+.bar-chart{display:flex;align-items:flex-end;gap:.5rem;height:120px;}
+.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%;justify-content:flex-end;}
+.bf{width:100%;border-radius:4px 4px 0 0;background:var(--red);opacity:.65;transition:opacity .2s;min-height:4px;}
+.bf:hover{opacity:1;}
+.bl{font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:center;}
+.bv{font-family:var(--mono);font-size:.55rem;color:var(--text);}
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr;}}
+
+.reports-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;}
+.rc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;gap:.8rem;transition:all .25s;text-decoration:none;color:inherit;}
+.rc:hover{border-color:rgba(46,196,182,.3);background:var(--card2);transform:translateY(-2px);}
+.rc-org{display:flex;align-items:center;gap:.6rem;}
+.badge{font-family:var(--mono);font-size:.6rem;font-weight:600;padding:.22rem .55rem;border-radius:5px;text-transform:uppercase;letter-spacing:.08em;}
+.bo{background:rgba(230,57,70,.15);color:var(--red);}
+.bu{background:rgba(69,123,157,.15);color:var(--blue);}
+.bi{background:rgba(244,162,97,.15);color:var(--amber);}
+.bteal{background:rgba(46,196,182,.15);color:var(--teal);}
+.bpurp{background:rgba(124,106,247,.15);color:#a78bfa;}
+.bgrey{background:rgba(255,255,255,.08);color:var(--text);}
+.rc-date{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-right:auto;}
+.rc-title{font-size:.9rem;font-weight:700;line-height:1.5;}
+.rc-desc{font-size:.78rem;color:var(--muted);line-height:1.6;}
+.rc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.8rem;border-top:1px solid var(--border);}
+.rc-type{font-family:var(--mono);font-size:.6rem;color:var(--muted);}
+.rc-link{font-size:.75rem;color:var(--teal);font-weight:700;}
+@media(max-width:900px){.reports-grid{grid-template-columns:1fr;}}
+
+.assess-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+.assess-info{position:sticky;top:80px;}
+.assess-info h3{font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:#fff;}
+.info-item{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:1rem;font-size:.85rem;}
+.info-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem;}
+.info-txt{color:var(--muted);line-height:1.6;}
+.info-txt strong{color:var(--text);display:block;margin-bottom:.2rem;}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;}
+.form-title{font-size:1rem;font-weight:700;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;}
+.fg{margin-bottom:1.2rem;}
+.fg label{display:block;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);}
+.fg label .req{color:var(--red);}
+.fi,.fs,.ft{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;color:var(--text);font-family:'Cairo',sans-serif;font-size:.88rem;transition:border-color .2s;outline:none;-webkit-appearance:none;appearance:none;}
+.fi:focus,.fs:focus,.ft:focus{border-color:rgba(46,196,182,.4);background:rgba(46,196,182,.03);}
+.ft{resize:vertical;min-height:90px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.needs-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
+.need-lbl{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text);background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;cursor:pointer;transition:all .2s;}
+.need-lbl:hover{border-color:rgba(46,196,182,.3);}
+.sev{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;}
+.sv{padding:.5rem;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted);font-family:'Cairo',sans-serif;font-size:.75rem;cursor:pointer;text-align:center;transition:all .2s;}
+.sv.on,.sv:hover{border-color:var(--red);color:var(--text);background:rgba(230,57,70,.1);}
+.submit-btn{width:100%;padding:.9rem;border-radius:12px;background:var(--red);color:#fff;border:none;font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:.5rem;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(230,57,70,.4);}
+.success-msg{display:none;background:rgba(46,196,182,.1);border:1px solid rgba(46,196,182,.3);border-radius:12px;padding:1.5rem;text-align:center;}
+.success-msg h4{color:var(--teal);font-size:1rem;margin-bottom:.5rem;}
+.success-msg p{color:var(--muted);font-size:.85rem;}
+@media(max-width:900px){.assess-layout{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-logo{font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.8rem;}
+.footer-note{font-size:.75rem;color:rgba(255,255,255,.18);line-height:1.7;}
+
+.leaflet-container{background:#0d1117 !important;}
+.leaflet-tile{filter:invert(1) hue-rotate(200deg) brightness(.7) contrast(1.2) saturate(.6);}
+.leaflet-popup-content-wrapper{background:var(--card) !important;border:1px solid var(--border) !important;border-radius:12px !important;color:var(--text) !important;box-shadow:0 8px 32px rgba(0,0,0,.5) !important;}
+.leaflet-popup-tip{background:var(--card) !important;}
+.leaflet-popup-content{font-family:'Cairo',sans-serif !important;font-size:.85rem !important;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp .6s ease both;}.fu2{animation:fadeUp .6s .12s ease both;}.fu3{animation:fadeUp .6s .22s ease both;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot"></div>
+    <div class="nav-logo-text">SUDAN-HUB / v2.4</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#sec-map">الخريطة</a></li>
+    <li><a href="#sec-stats">الإحصائيات</a></li>
+    <li><a href="#sec-reports">التقارير</a></li>
+    <li><a href="#sec-assess">تقييم الاحتياجات</a></li>
+  </ul>
+  <div class="nav-live"><div class="live-blink"></div>LIVE DATA</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="fu">
+      <div class="hero-tag">Sudan Humanitarian Data Hub</div>
+      <h1>مركز بيانات<br>الأزمة الإنسانية<br>في <em>السودان</em></h1>
+      <p class="hero-sub">منصة متكاملة لرصد الوضع الإنساني — خرائط تفاعلية، إحصائيات محدّثة، تقارير الأمم المتحدة، وأدوات تقييم الاحتياجات في مكان واحد.</p>
+      <div class="hero-actions">
+        <a href="#sec-map" class="btn btn-red">🗺️ استكشف الخريطة</a>
+        <a href="#sec-assess" class="btn btn-outline">📋 تقييم الاحتياجات</a>
+      </div>
+    </div>
+    <div class="hero-stats fu2">
+      <div class="hstat r"><div class="hstat-num">10.7M</div><div class="hstat-lbl">نازح داخلي منذ أبريل 2023</div><div class="hstat-src">آخر تحديث: أبريل 2026</div></div>
+      <div class="hstat a"><div class="hstat-num">3.2M</div><div class="hstat-lbl">لاجئ في دول الجوار</div><div class="hstat-src">مصدر: UNHCR</div></div>
+      <div class="hstat t"><div class="hstat-num">25.6M</div><div class="hstat-lbl">شخص يحتاج مساعدة إنسانية</div><div class="hstat-src">مصدر: OCHA</div></div>
+      <div class="hstat b"><div class="hstat-num">$2.7B</div><div class="hstat-lbl">احتياجات التمويل الإنساني</div><div class="hstat-src">خطة الاستجابة 2025</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div id="sec-map" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="wrap">
+  <div class="sec-hd fu">
+    <div class="sec-tag">// خريطة الأزمة</div>
+    <div class="sec-title">المناطق المتضررة <span>والنزوح</span></div>
+    <div class="divider"></div>
+  </div>
+  <div class="map-layout">
+    <div id="map"></div>
+    <div class="map-side">
+      <div class="map-legend">
+        <div class="leg-title">// مستوى التأثير</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#e63946"></div>حرج — أزمة إنسانية حادة</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f4a261"></div>شديد — نزوح واسع النطاق</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#e9c46a"></div>متوسط — انعدام أمن غذائي</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2ec4b6"></div>عمليات إنسانية نشطة</div>
+        <div class="leg-item" style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)">
+          <div class="leg-dot" style="background:#457b9d;border-radius:2px;width:14px;height:10px"></div>مخيمات النازحين
+        </div>
+      </div>
+      <div class="region-box">
+        <div class="leg-title">// أعلى الولايات تضرراً</div>
+        <div class="rgn"><div class="rgn-name">الخرطوم</div><div class="rgn-stat">2.1M نازح • حرج</div><div class="bar-bg"><div class="bar-fill" style="width:95%;background:var(--red)"></div></div></div>
+        <div class="rgn"><div class="rgn-name">دارفور الشمالية</div><div class="rgn-stat">1.8M نازح • حرج</div><div class="bar-bg"><div class="bar-fill" style="width:88%;background:var(--red)"></div></div></div>
+        <div class="rgn"><div class="rgn-name">كردفان الشمالية</div><div class="rgn-stat">920K نازح • شديد</div><div class="bar-bg"><div class="bar-fill" style="width:72%;background:var(--amber)"></div></div></div>
+        <div class="rgn"><div class="rgn-name">الجزيرة</div><div class="rgn-stat">780K نازح • شديد</div><div class="bar-bg"><div class="bar-fill" style="width:65%;background:var(--amber)"></div></div></div>
+        <div class="rgn"><div class="rgn-name">سنار</div><div class="rgn-stat">410K نازح • متوسط</div><div class="bar-bg"><div class="bar-fill" style="width:45%;background:#e9c46a"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- STATS -->
+<div id="sec-stats">
+<div class="wrap">
+  <div class="sec-hd fu">
+    <div class="sec-tag">// لوحة البيانات</div>
+    <div class="sec-title">إحصائيات <span>الأزمة</span> المحدّثة</div>
+    <div class="divider"></div>
+  </div>
+  <div class="stats-grid">
+    <div class="sc"><div class="sc-icon">🏠</div><div class="sc-num">10.7M</div><div class="sc-lbl">نازح داخلي — أعلى رقم في تاريخ السودان</div><div class="sc-trend up">↑ +340K منذ يناير 2026</div></div>
+    <div class="sc"><div class="sc-icon">🌍</div><div class="sc-num">3.2M</div><div class="sc-lbl">لاجئ في مصر، تشاد، إثيوبيا، وجنوب السودان</div><div class="sc-trend up">↑ +180K خلال Q1 2026</div></div>
+    <div class="sc"><div class="sc-icon">🍽️</div><div class="sc-num">17.7M</div><div class="sc-lbl">شخص في انعدام أمن غذائي حاد (IPC 3+)</div><div class="sc-trend up">↑ +2.1M مقارنة بـ 2025</div></div>
+    <div class="sc"><div class="sc-icon">🏥</div><div class="sc-num">70%</div><div class="sc-lbl">من المرافق الصحية خارج الخدمة في مناطق النزاع</div><div class="sc-trend up">↑ تدهور مستمر</div></div>
+    <div class="sc"><div class="sc-icon">👶</div><div class="sc-num">3.1M</div><div class="sc-lbl">طفل يعانون من سوء التغذية الحاد</div><div class="sc-trend up">↑ +400K مقارنة بـ 2025</div></div>
+    <div class="sc"><div class="sc-icon">💊</div><div class="sc-num">37%</div><div class="sc-lbl">فقط من خطة الاستجابة الإنسانية 2025 تم تمويله</div><div class="sc-trend dn">↓ فجوة تمويل $1.7B</div></div>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">// تطور أعداد النازحين الداخليين — أبريل 2023 حتى 2026</div>
+    <div class="bar-chart">
+      <div class="bc"><div class="bv">3.8M</div><div class="bf" style="height:36%"></div><div class="bl">أبر 23</div></div>
+      <div class="bc"><div class="bv">5.1M</div><div class="bf" style="height:48%"></div><div class="bl">يول 23</div></div>
+      <div class="bc"><div class="bv">6.9M</div><div class="bf" style="height:64%"></div><div class="bl">ديس 23</div></div>
+      <div class="bc"><div class="bv">7.8M</div><div class="bf" style="height:73%"></div><div class="bl">يون 24</div></div>
+      <div class="bc"><div class="bv">9.2M</div><div class="bf" style="height:85%"></div><div class="bl">ديس 24</div></div>
+      <div class="bc"><div class="bv">10.1M</div><div class="bf" style="height:94%"></div><div class="bl">يناير 26</div></div>
+      <div class="bc"><div class="bv">10.7M</div><div class="bf" style="height:100%;opacity:1;background:var(--red)"></div><div class="bl">أبر 26</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- REPORTS -->
+<div id="sec-reports" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="wrap">
+  <div class="sec-hd fu">
+    <div class="sec-tag">// المصادر الرسمية</div>
+    <div class="sec-title">تقارير <span>OCHA & UNHCR</span> والشركاء</div>
+    <div class="divider"></div>
+  </div>
+  <div class="reports-grid">
+    <a class="rc" href="https://www.unocha.org/sudan" target="_blank">
+      <div class="rc-org"><span class="badge bo">OCHA</span><span class="rc-date">أبريل 2026</span></div>
+      <div class="rc-title">تحديث الوضع الإنساني في السودان — أبريل 2026</div>
+      <div class="rc-desc">تقرير مكتب تنسيق الشؤون الإنسانية: خريطة الاستجابة، فجوات التمويل، والأولويات الفورية.</div>
+      <div class="rc-footer"><span class="rc-type">Situation Report</span><span class="rc-link">فتح التقرير ↗</span></div>
+    </a>
+    <a class="rc" href="https://www.unhcr.org/sudan-emergency" target="_blank">
+      <div class="rc-org"><span class="badge bu">UNHCR</span><span class="rc-date">مارس 2026</span></div>
+      <div class="rc-title">طوارئ السودان — بيانات اللاجئين والنازحين</div>
+      <div class="rc-desc">إحصائيات المفوضية السامية حول اللاجئين في دول الجوار وخطط الاستجابة الإقليمية.</div>
+      <div class="rc-footer"><span class="rc-type">Data Dashboard • Live</span><span class="rc-link">فتح البيانات ↗</span></div>
+    </a>
+    <a class="rc" href="https://dtm.iom.int/sudan" target="_blank">
+      <div class="rc-org"><span class="badge bi">IOM / DTM</span><span class="rc-date">فبراير 2026</span></div>
+      <div class="rc-title">مصفوفة تتبع النزوح — التقرير الدوري الرابع</div>
+      <div class="rc-desc">بيانات منظمة الهجرة الدولية حول حركات النزوح وتوزيع النازحين في الولايات الثماني عشرة.</div>
+      <div class="rc-footer"><span class="rc-type">DTM Report • PDF</span><span class="rc-link">فتح التقرير ↗</span></div>
+    </a>
+    <a class="rc" href="https://www.unicef.org/sudan/" target="_blank">
+      <div class="rc-org"><span class="badge bteal">UNICEF</span><span class="rc-date">مارس 2026</span></div>
+      <div class="rc-title">وضع الأطفال في السودان — بيان إنساني</div>
+      <div class="rc-desc">تأثير الأزمة على الأطفال: التغذية، التعليم، الصحة النفسية، وحماية الطفل في مناطق النزاع.</div>
+      <div class="rc-footer"><span class="rc-type">Humanitarian Brief</span><span class="rc-link">فتح التقرير ↗</span></div>
+    </a>
+    <a class="rc" href="https://www.wfp.org/countries/sudan" target="_blank">
+      <div class="rc-org"><span class="badge bpurp">WFP</span><span class="rc-date">أبريل 2026</span></div>
+      <div class="rc-title">تقييم الأمن الغذائي الطارئ — السودان 2026</div>
+      <div class="rc-desc">حالة انعدام الأمن الغذائي في 18 ولاية، خطط التوزيع، وأعداد المستهدفين بالمساعدات الغذائية.</div>
+      <div class="rc-footer"><span class="rc-type">Emergency Assessment</span><span class="rc-link">فتح التقرير ↗</span></div>
+    </a>
+    <a class="rc" href="https://www.msf.org/sudan" target="_blank">
+      <div class="rc-org"><span class="badge bgrey">MSF</span><span class="rc-date">مارس 2026</span></div>
+      <div class="rc-title">تقرير العمليات الطبية — أطباء بلا حدود</div>
+      <div class="rc-desc">وصف ميداني للأوضاع الصحية والجراحية في مناطق النزاع وتوثيق الاحتياجات الطبية الحرجة.</div>
+      <div class="rc-footer"><span class="rc-type">Field Report • Web</span><span class="rc-link">فتح التقرير ↗</span></div>
+    </a>
+  </div>
+</div>
+</div>
+
+<!-- ASSESSMENT FORM -->
+<div id="sec-assess">
+<div class="wrap">
+  <div class="sec-hd fu">
+    <div class="sec-tag">// تقييم الاحتياجات</div>
+    <div class="sec-title">نموذج <span>التقييم الميداني</span></div>
+    <div class="divider"></div>
+  </div>
+  <div class="assess-layout">
+    <div class="assess-info">
+      <h3>لماذا نجمع هذه البيانات؟</h3>
+      <div class="info-item"><div class="info-icon">🎯</div><div class="info-txt"><strong>تحديد الأولويات</strong>بيانات التقييم توجّه الاستجابة الإنسانية نحو المناطق الأكثر احتياجاً.</div></div>
+      <div class="info-item"><div class="info-icon">📊</div><div class="info-txt"><strong>قاعدة بيانات موثوقة</strong>نسد الفجوة بين الأرقام الرسمية والواقع الفعلي على الأرض.</div></div>
+      <div class="info-item"><div class="info-icon">🔒</div><div class="info-txt"><strong>سرية تامة</strong>جميع البيانات مجهولة الهوية ولا تُشارك إلا مع المنظمات الإنسانية المعتمدة.</div></div>
+      <div class="info-item"><div class="info-icon">⚡</div><div class="info-txt"><strong>استجابة سريعة</strong>مراجعة النماذج خلال 48 ساعة، وتواصل فوري في الحالات الطارئة.</div></div>
+    </div>
+    <div class="form-card">
+      <div class="form-title">📋 نموذج تقييم الاحتياجات الإنسانية</div>
+      <div id="formContent">
+        <div class="frow">
+          <div class="fg">
+            <label>الولاية <span class="req">*</span></label>
+            <select class="fs" id="f_state">
+              <option value="">اختر الولاية</option>
+              <option>الخرطوم</option><option>الجزيرة</option><option>كسلا</option><option>القضارف</option>
+              <option>سنار</option><option>النيل الأزرق</option><option>دارفور الشمالية</option>
+              <option>دارفور الجنوبية</option><option>دارفور الغربية</option><option>دارفور الوسطى</option>
+              <option>كردفان الشمالية</option><option>كردفان الجنوبية</option><option>النيل الأبيض</option>
+              <option>نهر النيل</option><option>الشمالية</option><option>البحر الأحمر</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>المحلية / المنطقة</label>
+            <input type="text" class="fi" id="f_locality" placeholder="مثال: أم درمان">
+          </div>
+        </div>
+        <div class="fg">
+          <label>نوع الجهة المُبلِّغة <span class="req">*</span></label>
+          <select class="fs" id="f_orgtype">
+            <option value="">اختر نوع الجهة</option>
+            <option>منظمة غير حكومية محلية</option><option>منظمة دولية</option><option>جهة حكومية</option>
+            <option>تجمع / مجلس مقاومة</option><option>متطوع ميداني</option><option>شخص متضرر</option><option>أخرى</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>عدد الأشخاص المتضررين (تقريباً)</label>
+          <select class="fs" id="f_affected">
+            <option value="">اختر النطاق</option>
+            <option>أقل من 50 شخص</option><option>50 - 200 شخص</option><option>200 - 500 شخص</option>
+            <option>500 - 1000 شخص</option><option>أكثر من 1000 شخص</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>أنواع الاحتياجات الأكثر إلحاحاً <span class="req">*</span></label>
+          <div class="needs-grid">
+            <label class="need-lbl"><input type="checkbox" value="food"> 🍽️ غذاء</label>
+            <label class="need-lbl"><input type="checkbox" value="water"> 💧 مياه ونظافة</label>
+            <label class="need-lbl"><input type="checkbox" value="health"> 🏥 رعاية صحية</label>
+            <label class="need-lbl"><input type="checkbox" value="shelter"> 🏕️ مأوى</label>
+            <label class="need-lbl"><input type="checkbox" value="edu"> 📚 تعليم</label>
+            <label class="need-lbl"><input type="checkbox" value="protection"> 🛡️ حماية</label>
+          </div>
+        </div>
+        <div class="fg">
+          <label>مستوى الأزمة <span class="req">*</span></label>
+          <div class="sev">
+            <div class="sv" onclick="setSev(this,'1')">🟡 منخفض</div>
+            <div class="sv" onclick="setSev(this,'2')">🟠 متوسط</div>
+            <div class="sv" onclick="setSev(this,'3')">🔴 شديد</div>
+            <div class="sv" onclick="setSev(this,'4')">🚨 حرج</div>
+          </div>
+          <input type="hidden" id="f_severity">
+        </div>
+        <div class="fg">
+          <label>وصف الوضع ومعلومات إضافية</label>
+          <textarea class="ft" id="f_desc" placeholder="اوصف الوضع الراهن، الاحتياجات التفصيلية، أو أي معلومات تساعد في الاستجابة..."></textarea>
+        </div>
+        <div class="frow">
+          <div class="fg">
+            <label>جهة الاتصال (اختياري)</label>
+            <input type="text" class="fi" id="f_contact" placeholder="اسم للتواصل">
+          </div>
+          <div class="fg">
+            <label>رقم هاتف أو واتساب</label>
+            <input type="text" class="fi" id="f_phone" placeholder="+249...">
+          </div>
+        </div>
+        <button class="submit-btn" onclick="submitForm()">📤 إرسال تقييم الاحتياجات</button>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <h4>✅ تم استلام تقييمكم بنجاح</h4>
+        <p>شكراً على مشاركة هذه المعلومات الحيوية. سيتم مراجعة البيانات خلال 48 ساعة والتواصل معكم في حال الحاجة لمزيد من التفاصيل.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">⬡ SUDAN HUMANITARIAN DATA HUB</div>
+    <p class="footer-note">
+      هذه المنصة لأغراض إنسانية وتنسيقية فقط. البيانات مستمدة من OCHA وUNHCR وIOM وشركاء الاستجابة الإنسانية.<br>
+      جميع البيانات المُبلَّغ عنها محمية وسرية تامة. للتواصل: info@sudan-hub.org
+    </p>
+  </div>
+</footer>
+
+<script>
+// MAP INIT
+const map = L.map('map', {zoomControl:true}).setView([15.5, 32.5], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© OpenStreetMap', maxZoom:18
+}).addTo(map);
+
+function addZone(lat,lng,color,radius,name,detail){
+  L.circleMarker([lat,lng],{
+    radius, fillColor:color, color:color,
+    weight:1, opacity:.8, fillOpacity:.35
+  }).addTo(map).bindPopup(
+    `<strong style="color:${color}">${name}</strong><br><span style="color:#9ca3af;font-size:.8rem">${detail}</span>`
+  );
+}
+
+// Crisis zones
+addZone(15.55,32.53,'#e63946',22,'الخرطوم','2.1 مليون نازح — أزمة حرجة');
+addZone(14.18,33.43,'#e63946',18,'الجزيرة','780K نازح — أزمة شديدة');
+addZone(13.8,24.9,'#e63946',20,'دارفور الشمالية','1.8M نازح — أزمة حرجة');
+addZone(12.9,23.5,'#f4a261',15,'دارفور الغربية','620K نازح — أزمة شديدة');
+addZone(11.5,24.2,'#f4a261',13,'دارفور الجنوبية','440K نازح — أزمة شديدة');
+addZone(11.8,29.7,'#f4a261',14,'كردفان الجنوبية','380K نازح');
+addZone(12.8,29.4,'#f4a261',16,'كردفان الشمالية','920K نازح — شديد');
+addZone(13.55,33.6,'#e9c46a',12,'سنار','410K نازح — متوسط');
+addZone(11.3,34.3,'#2ec4b6',10,'النيل الأزرق','عمليات إنسانية نشطة');
+addZone(15.4,36.4,'#2ec4b6',10,'كسلا','مركز استقبال للنازحين');
+addZone(14.0,35.4,'#2ec4b6',10,'القضارف','ممر عبور رئيسي');
+
+// Camps
+const ci = L.divIcon({
+  html:'<div style="background:#457b9d;width:10px;height:10px;border-radius:2px;border:1px solid rgba(255,255,255,.5)"></div>',
+  className:'', iconSize:[10,10]
+});
+[[13.2,22.4,'مخيم زمزم، دارفور'],[12.1,24.8,'مخيم كالما'],[11.1,26.3,'مخيم دريج'],[14.8,30.1,'مخيم أم سدر']]
+.forEach(([lat,lng,name])=>{
+  L.marker([lat,lng],{icon:ci}).addTo(map)
+   .bindPopup(`<strong>${name}</strong><br><span style="color:#9ca3af;font-size:.8rem">مخيم نازحين رئيسي</span>`);
+});
+
+// FORM
+function setSev(el, v){
+  document.querySelectorAll('.sv').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('f_severity').value = v;
+}
+
+function submitForm(){
+  const state   = document.getElementById('f_state').value;
+  const orgtype = document.getElementById('f_orgtype').value;
+  const sev     = document.getElementById('f_severity').value;
+  if(!state || !orgtype || !sev){
+    alert('الرجاء تعبئة الحقول المطلوبة: الولاية، نوع الجهة، ومستوى الأزمة');
+    return;
+  }
+  document.getElementById('formContent').style.display='none';
+  const sm = document.getElementById('successMsg');
+  sm.style.display='block';
+  window.scrollTo({top: sm.getBoundingClientRect().top + window.scrollY - 120, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
