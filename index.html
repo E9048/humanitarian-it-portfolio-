@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elyas Muhammad Yahya — Humanitarian IT Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080f;--surface:#0d1117;--card:#111827;--card2:#161d2c;
+  --blue:#2563eb;--cyan:#06b6d4;--red:#e63946;--amber:#f59e0b;--green:#10b981;
+  --text:#dde1e7;--muted:#6b7280;--border:rgba(255,255,255,0.07);
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 15% 20%,rgba(37,99,235,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 80%,rgba(6,182,212,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);pointer-events:none;z-index:9999;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,8,15,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 2rem;justify-content:space-between;}
+.nav-logo{font-family:var(--mono);font-size:.75rem;font-weight:700;color:var(--cyan);letter-spacing:.08em;}
+.nav-status{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.65rem;color:var(--green);border:1px solid rgba(16,185,129,.25);padding:.25rem .7rem;border-radius:5px;background:rgba(16,185,129,.05);}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 2rem 3rem;position:relative;z-index:1;}
+.hero-inner{max-width:960px;margin:0 auto;width:100%;}
+.hero-tag{font-family:var(--mono);font-size:.65rem;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.hero-tag::before{content:'';display:inline-block;width:28px;height:1px;background:var(--cyan);}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.1;color:#fff;margin-bottom:.6rem;}
+.hero h1 em{font-style:normal;color:var(--cyan);}
+.hero-role{font-family:var(--mono);font-size:.82rem;color:var(--amber);font-weight:600;letter-spacing:.05em;margin-bottom:1.2rem;}
+.hero-bio{font-size:.95rem;color:var(--muted);line-height:1.85;max-width:580px;margin-bottom:2rem;}
+.hero-bio strong{color:var(--text);}
+.hero-contact{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2.5rem;}
+.chip{font-family:var(--mono);font-size:.68rem;padding:.3rem .8rem;border-radius:6px;border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:all .2s;}
+.chip:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.chip.hl{border-color:rgba(37,99,235,.3);color:var(--blue);background:rgba(37,99,235,.06);}
+
+/* STATS */
+.hero-stats{display:flex;gap:2.5rem;padding:1.5rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:3rem;}
+.stat-item{}
+.stat-num{font-family:var(--mono);font-size:1.8rem;font-weight:700;color:#fff;line-height:1;}
+.stat-lbl{font-size:.72rem;color:var(--muted);margin-top:.3rem;font-weight:600;}
+
+/* SECTION */
+.wrap{max-width:960px;margin:0 auto;padding:5rem 2rem;position:relative;z-index:1;}
+.sec-tag{font-family:var(--mono);font-size:.65rem;color:var(--cyan);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem;}
+.sec-title{font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:.5rem;}
+.sec-title span{color:var(--cyan);}
+.sec-bar{width:36px;height:2px;background:var(--blue);margin-bottom:2.5rem;}
+
+/* PROJECT CARDS */
+.projects{display:grid;gap:1rem;}
+.proj{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;display:grid;grid-template-columns:56px 1fr auto;gap:1.2rem;align-items:start;text-decoration:none;color:inherit;transition:all .25s;position:relative;overflow:hidden;}
+.proj::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:16px 0 0 16px;opacity:0;transition:opacity .25s;}
+.proj.blue::after{background:var(--blue);}
+.proj.red::after{background:var(--red);}
+.proj.cyan::after{background:var(--cyan);}
+.proj:hover{border-color:rgba(255,255,255,.12);transform:translateX(4px);box-shadow:0 16px 48px rgba(0,0,0,.4);}
+.proj:hover::after{opacity:1;}
+.proj-num{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:rgba(255,255,255,.1);padding-top:.2rem;}
+.proj-name{font-size:1rem;font-weight:800;color:#fff;margin-bottom:.4rem;}
+.proj-desc{font-size:.83rem;color:var(--muted);line-height:1.7;margin-bottom:.8rem;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tag{font-family:var(--mono);font-size:.6rem;font-weight:600;padding:.2rem .6rem;border-radius:5px;border:1px solid;}
+.tag-blue{border-color:rgba(37,99,235,.3);color:#60a5fa;background:rgba(37,99,235,.08);}
+.tag-red{border-color:rgba(230,57,70,.3);color:#f87171;background:rgba(230,57,70,.08);}
+.tag-cyan{border-color:rgba(6,182,212,.3);color:#22d3ee;background:rgba(6,182,212,.08);}
+.proj-arrow{font-size:1.2rem;color:var(--muted);margin-top:.3rem;transition:all .2s;}
+.proj:hover .proj-arrow{color:var(--text);transform:translateX(-4px);}
+
+/* SKILLS */
+.skills-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.sk-group{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.3rem;}
+.sk-title{font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;}
+.sk-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.sk-chip{font-size:.75rem;padding:.25rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text);}
+
+/* CERTS */
+.certs-list{display:grid;gap:.6rem;}
+.cert{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.cert-info{}
+.cert-name{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.cert-issuer{font-size:.75rem;color:var(--muted);}
+.cert-badge{font-family:var(--mono);font-size:.62rem;font-weight:700;padding:.2rem .6rem;border-radius:5px;white-space:nowrap;}
+.done{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.wip{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.25);}
+
+/* CONTACT */
+.contact-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.5rem;text-align:center;}
+.contact-box h3{font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:.5rem;}
+.contact-box p{color:var(--muted);font-size:.88rem;margin-bottom:1.8rem;}
+.contact-btns{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;}
+.btn{padding:.7rem 1.5rem;border-radius:10px;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.4);}
+.btn-green{background:rgba(37,211,102,.1);color:#25d366;border:1px solid rgba(37,211,102,.2);}
+.btn-green:hover{background:rgba(37,211,102,.18);transform:translateY(-2px);}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;position:relative;z-index:1;}
+footer p{font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.18);}
+footer a{color:var(--cyan);text-decoration:none;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp .6s ease both;}
+.fu2{animation:fadeUp .6s .1s ease both;}
+.fu3{animation:fadeUp .6s .2s ease both;}
+
+@media(max-width:700px){
+  .skills-grid{grid-template-columns:1fr;}
+  .proj{grid-template-columns:40px 1fr;}
+  .proj-arrow{display:none;}
+  .hero-stats{gap:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">elyas.muhammad / portfolio</div>
+  <div class="nav-status"><div class="nav-dot"></div>Open to Work</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag fu">Humanitarian IT Portfolio</div>
+    <h1 class="fu2">Elyas<br>Muhammad <em>Yahya</em></h1>
+    <div class="hero-role fu2">Humanitarian IT Support · Data Assistant · NGO Tech Specialist</div>
+    <p class="hero-bio fu3">
+      خريج تقنية معلومات بخبرة ميدانية حقيقية في السودان. بنيت أنظمة بيانات، قدمت دعم IT للمنظمات الإنسانية،
+      وطورت أدوات رقمية <strong>تُستخدم فعلياً</strong> في البيئات المحدودة الموارد.
+      متاح للعمل الميداني والبعيد فوراً.
+    </p>
+    <div class="hero-contact fu3">
+      <a class="chip hl" href="mailto:elyasmohammed2020@gmail.com">✉ elyasmohammed2020@gmail.com</a>
+      <a class="chip hl" href="https://wa.me/249904618106" target="_blank">💬 +249 904 618 106</a>
+      <a class="chip" href="https://linkedin.com/in/elyas-muhammad-b2b073268" target="_blank">🔗 LinkedIn</a>
+      <a class="chip" href="https://github.com/E9048" target="_blank">⌥ GitHub</a>
+    </div>
+    <div class="hero-stats fu3">
+      <div class="stat-item"><div class="stat-num">30%</div><div class="stat-lbl">تقليل وقت التسجيل</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">مشاريع حية</div></div>
+      <div class="stat-item"><div class="stat-num">200+</div><div class="stat-lbl">طالب في حملة الأمن</div></div>
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-lbl">مستفيد مُسجَّل</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="wrap" id="projects">
+  <div class="sec-tag">// Portfolio Projects</div>
+  <div class="sec-title">المشاريع <span>الحية</span></div>
+  <div class="sec-bar"></div>
+
+  <div class="projects">
+
+    <a class="proj blue" href="sudan-hub.html">
+      <div class="proj-num">01</div>
+      <div>
+        <div class="proj-name">Sudan Humanitarian Data Hub</div>
+        <div class="proj-desc">
+          داشبورد إنساني متكامل لأزمة السودان — خريطة تفاعلية للمناطق المتضررة،
+          إحصائيات 10.7M نازح، مركز تقارير OCHA/UNHCR، ونموذج تقييم احتياجات ميداني.
+        </div>
+        <div class="proj-tags">
+          <span class="tag tag-blue">HTML · CSS · JS</span>
+          <span class="tag tag-blue">Leaflet.js</span>
+          <span class="tag tag-blue">Humanitarian Data</span>
+          <span class="tag tag-blue">Sudan Crisis</span>
+        </div>
+      </div>
+      <div class="proj-arrow">←</div>
+    </a>
+
+    <a class="proj cyan" href="ngo-assessment.html">
+      <div class="proj-num">02</div>
+      <div>
+        <div class="proj-name">NGO Digital Readiness Assessment</div>
+        <div class="proj-desc">
+          أداة تفاعلية مدعومة بالذكاء الاصطناعي — 20 سؤالاً في 4 محاور تقيّم الجاهزية الرقمية للمنظمة
+          وتولّد تقريراً مخصصاً بالتوصيات عبر Claude API.
+        </div>
+        <div class="proj-tags">
+          <span class="tag tag-cyan">HTML · CSS · JS</span>
+          <span class="tag tag-cyan">Anthropic API</span>
+          <span class="tag tag-cyan">NGO Consulting</span>
+          <span class="tag tag-cyan">AI-Powered</span>
+        </div>
+      </div>
+      <div class="proj-arrow">←</div>
+    </a>
+
+    <a class="proj red" href="sudan_cyber_safety_guide.html">
+      <div class="proj-num">03</div>
+      <div>
+        <div class="proj-name">Sudan Cyber Safety Guide</div>
+        <div class="proj-desc">
+          دليل أمان رقمي ثنائي اللغة للعاملين الإنسانيين والصحفيين والمجتمعات المتضررة في السودان —
+          تهديدات، قائمة تدقيق تفاعلية، أدوات مجانية، وبروتوكول طوارئ.
+        </div>
+        <div class="proj-tags">
+          <span class="tag tag-red">HTML · CSS · JS</span>
+          <span class="tag tag-red">Cybersecurity</span>
+          <span class="tag tag-red">Bilingual AR/EN</span>
+          <span class="tag tag-red">Field Ready</span>
+        </div>
+      </div>
+      <div class="proj-arrow">←</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="skills-wrap" id="skills">
+<div class="wrap" style="padding-top:4rem;padding-bottom:4rem;">
+  <div class="sec-tag">// Technical Skills</div>
+  <div class="sec-title">المهارات <span>التقنية</span></div>
+  <div class="sec-bar"></div>
+  <div class="skills-grid">
+    <div class="sk-group">
+      <div class="sk-title">Data & Analysis</div>
+      <div class="sk-chips">
+        <span class="sk-chip">Excel Advanced</span><span class="sk-chip">Power BI</span>
+        <span class="sk-chip">MS Access</span><span class="sk-chip">SQL Basic</span>
+        <span class="sk-chip">KoboToolbox</span><span class="sk-chip">Google Sheets</span>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-title">Cybersecurity</div>
+      <div class="sk-chips">
+        <span class="sk-chip">Security Fundamentals</span><span class="sk-chip">Data Confidentiality</span>
+        <span class="sk-chip">Awareness Training</span><span class="sk-chip">Safe Browsing</span>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-title">Web & Development</div>
+      <div class="sk-chips">
+        <span class="sk-chip">HTML / CSS</span><span class="sk-chip">JavaScript</span>
+        <span class="sk-chip">Leaflet.js</span><span class="sk-chip">Anthropic API</span>
+        <span class="sk-chip">GitHub</span>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-title">Humanitarian & M&E</div>
+      <div class="sk-chips">
+        <span class="sk-chip">Needs Assessment</span><span class="sk-chip">Indicator Tracking</span>
+        <span class="sk-chip">Beneficiary Mgmt</span><span class="sk-chip">Field Data</span>
+        <span class="sk-chip">Arabic (Native)</span><span class="sk-chip">English (Advanced)</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CERTS -->
+<div class="wrap" id="certs">
+  <div class="sec-tag">// Certifications</div>
+  <div class="sec-title">الشهادات <span>والتدريب</span></div>
+  <div class="sec-bar"></div>
+  <div class="certs-list">
+    <div class="cert"><div class="cert-info"><div class="cert-name">Google Cybersecurity Fundamentals</div><div class="cert-issuer">Google / Coursera</div></div><span class="cert-badge done">✓ مكتملة</span></div>
+    <div class="cert"><div class="cert-info"><div class="cert-name">Experience Certificate</div><div class="cert-issuer">Najm Al-Shamal Institute</div></div><span class="cert-badge done">✓ مكتملة</span></div>
+    <div class="cert"><div class="cert-info"><div class="cert-name">English Language Certificate</div><div class="cert-issuer">Advanced Level</div></div><span class="cert-badge done">✓ مكتملة</span></div>
+    <div class="cert"><div class="cert-info"><div class="cert-name">Google IT Support Professional</div><div class="cert-issuer">Google / Coursera</div></div><span class="cert-badge wip">⏳ جارية</span></div>
+    <div class="cert"><div class="cert-info"><div class="cert-name">Introduction to Humanitarian Action</div><div class="cert-issuer">DisasterReady.org</div></div><span class="cert-badge wip">⏳ جارية</span></div>
+    <div class="cert"><div class="cert-info"><div class="cert-name">Data Analysis for Humanitarian Work</div><div class="cert-issuer">DataCamp / SDG Academy</div></div><span class="cert-badge wip">⏳ جارية</span></div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="wrap" id="contact">
+  <div class="contact-box">
+    <h3>Let's Work Together 🤝</h3>
+    <p>متاح للعمل الميداني والبعيد — NGOs، منظمات التنمية، والمشاريع الإنسانية</p>
+    <div class="contact-btns">
+      <a class="btn btn-blue" href="mailto:elyasmohammed2020@gmail.com">✉ Email</a>
+      <a class="btn btn-green" href="https://wa.me/249904618106" target="_blank">💬 WhatsApp</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/elyas-muhammad-b2b073268" target="_blank">🔗 LinkedIn</a>
+      <a class="btn btn-ghost" href="https://github.com/E9048" target="_blank">⌥ GitHub</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Built by <a href="https://github.com/E9048">Elyas Muhammad Yahya</a> · Port Sudan, Sudan 🇸🇩 · <a href="https://github.com/E9048/humanitarian-it-portfolio">github.com/E9048</a></p>
+</footer>
+
+</body>
+</html>
