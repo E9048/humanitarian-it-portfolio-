@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل الأمان الرقمي — السودان | Sudan Cyber Safety Guide</title>
+<meta name="description" content="دليل شامل للأمان الرقمي للعاملين الإنسانيين والصحفيين والمجتمعات المتضررة في السودان">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --card: #111111;
+  --border: rgba(255,255,255,0.06);
+  --red: #dc2626;
+  --red-light: #ef4444;
+  --amber: #d97706;
+  --green: #059669;
+  --blue: #2563eb;
+  --white: #f8fafc;
+  --text: #cbd5e1;
+  --muted: #52525b;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+/* Scanline effect */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events:none; z-index:999;
+}
+
+/* Red glow top */
+body::before {
+  content:'';
+  position:fixed; top:0; left:50%; transform:translateX(-50%);
+  width:600px; height:300px;
+  background:radial-gradient(ellipse at top, rgba(220,38,38,0.12), transparent 70%);
+  pointer-events:none; z-index:0;
+}
+
+.wrap { max-width:900px; margin:0 auto; padding:0 20px; position:relative; z-index:1; }
+
+/* ── HEADER ── */
+header {
+  background:rgba(10,10,10,0.95);
+  border-bottom:1px solid rgba(220,38,38,0.2);
+  padding:16px 20px;
+  position:sticky; top:0; z-index:100;
+  backdrop-filter:blur(12px);
+}
+.header-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
+.header-logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:20px; letter-spacing:3px;
+  color:var(--red-light);
+}
+.header-badge {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:2px;
+  color:var(--muted);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:4px 12px; border-radius:4px;
+}
+
+/* ── HERO ── */
+.hero {
+  padding:80px 0 60px;
+  text-align:center;
+  position:relative;
+}
+.hero-tag {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--red-light);
+  border:1px solid rgba(220,38,38,0.3);
+  padding:6px 20px; border-radius:2px;
+  margin-bottom:28px;
+  background:rgba(220,38,38,0.05);
+  animation:fadeDown 0.6s ease both;
+}
+.hero h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,10vw,96px);
+  letter-spacing:4px;
+  color:var(--white);
+  line-height:0.95;
+  margin-bottom:16px;
+  animation:fadeDown 0.6s 0.1s ease both;
+}
+.hero h1 span { color:var(--red-light); }
+.hero-sub {
+  font-size:15px; color:var(--muted);
+  max-width:560px; margin:0 auto 40px;
+  line-height:1.8;
+  animation:fadeDown 0.6s 0.2s ease both;
+}
+.hero-audiences {
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  margin-bottom:50px;
+  animation:fadeDown 0.6s 0.3s ease both;
+}
+.audience-chip {
+  font-size:12px; font-weight:700;
+  padding:8px 18px; border-radius:2px;
+  border:1px solid;
+}
+.chip-red   { border-color:rgba(220,38,38,0.4); color:#f87171; background:rgba(220,38,38,0.08); }
+.chip-amber { border-color:rgba(217,119,6,0.4);  color:#fbbf24; background:rgba(217,119,6,0.08); }
+.chip-blue  { border-color:rgba(37,99,235,0.4);  color:#60a5fa; background:rgba(37,99,235,0.08); }
+
+/* ── ALERT BOX ── */
+.alert {
+  border:1px solid rgba(220,38,38,0.3);
+  border-right:4px solid var(--red);
+  background:rgba(220,38,38,0.05);
+  border-radius:4px;
+  padding:20px 24px;
+  margin-bottom:48px;
+  display:flex; align-items:flex-start; gap:16px;
+}
+.alert-icon { font-size:24px; flex-shrink:0; }
+.alert-text { font-size:13px; line-height:1.8; color:var(--text); }
+.alert-text strong { color:var(--white); }
+
+/* ── SECTION ── */
+.section { padding:48px 0; border-top:1px solid var(--border); }
+.section-header { display:flex; align-items:center; gap:16px; margin-bottom:32px; }
+.section-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:48px; color:rgba(220,38,38,0.2);
+  line-height:1; flex-shrink:0;
+}
+.section-title-wrap {}
+.section-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px; letter-spacing:2px;
+  color:var(--white);
+}
+.section-subtitle { font-size:12px; color:var(--muted); letter-spacing:1px; }
+
+/* ── THREAT CARDS ── */
+.threats { display:grid; gap:12px; }
+.threat-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:20px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:16px;
+  transition:all 0.2s;
+}
+.threat-card:hover { border-color:rgba(220,38,38,0.25); transform:translateX(-4px); }
+.threat-level {
+  width:44px; height:44px; border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+.level-critical { background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.3); }
+.level-high     { background:rgba(217,119,6,0.15);  border:1px solid rgba(217,119,6,0.3); }
+.level-medium   { background:rgba(37,99,235,0.12);  border:1px solid rgba(37,99,235,0.25); }
+.threat-name { font-size:15px; font-weight:700; color:var(--white); margin-bottom:4px; }
+.threat-desc { font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:10px; }
+.threat-tip {
+  font-size:11px; font-weight:700;
+  padding:4px 12px; border-radius:2px;
+  display:inline-block;
+}
+.tip-red   { background:rgba(220,38,38,0.1); color:#f87171; border:1px solid rgba(220,38,38,0.2); }
+.tip-amber { background:rgba(217,119,6,0.1); color:#fbbf24; border:1px solid rgba(217,119,6,0.2); }
+.tip-blue  { background:rgba(37,99,235,0.1); color:#60a5fa; border:1px solid rgba(37,99,235,0.2); }
+.tip-green { background:rgba(5,150,105,0.1); color:#34d399; border:1px solid rgba(5,150,105,0.2); }
+
+/* ── CHECKLIST ── */
+.checklist { display:grid; gap:8px; }
+.check-item {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:14px 18px;
+  display:flex; align-items:flex-start; gap:14px;
+  transition:all 0.2s; cursor:pointer;
+}
+.check-item:hover { border-color:rgba(5,150,105,0.25); }
+.check-item.checked { border-color:rgba(5,150,105,0.3); background:rgba(5,150,105,0.05); }
+.check-box {
+  width:20px; height:20px; border-radius:3px;
+  border:2px solid var(--muted);
+  flex-shrink:0; margin-top:1px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; font-size:12px;
+}
+.check-item.checked .check-box { background:var(--green); border-color:var(--green); color:white; }
+.check-text { font-size:13px; line-height:1.7; }
+.check-text strong { color:var(--white); display:block; margin-bottom:2px; }
+
+/* ── TIPS GRID ── */
+.tips-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.tip-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:20px;
+  transition:all 0.2s;
+}
+.tip-card:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-3px); }
+.tip-card-icon { font-size:28px; margin-bottom:12px; display:block; }
+.tip-card-title { font-size:14px; font-weight:700; color:var(--white); margin-bottom:8px; }
+.tip-card-desc { font-size:12px; color:var(--muted); line-height:1.7; }
+.tip-card-action {
+  margin-top:12px; font-size:11px; font-weight:700;
+  color:var(--green); letter-spacing:0.5px;
+}
+
+/* ── EMERGENCY ── */
+.emergency-box {
+  background:rgba(220,38,38,0.06);
+  border:1px solid rgba(220,38,38,0.25);
+  border-radius:6px;
+  padding:32px;
+  text-align:center;
+}
+.emergency-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px; letter-spacing:3px;
+  color:var(--red-light);
+  margin-bottom:8px;
+}
+.emergency-sub { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.emergency-steps { display:grid; gap:10px; text-align:right; }
+.emergency-step {
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:12px 16px;
+  display:flex; align-items:center; gap:14px;
+}
+.step-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px; color:var(--red-light);
+  flex-shrink:0; width:32px;
+}
+.step-text { font-size:13px; line-height:1.6; }
+.step-text strong { color:var(--white); display:block; }
+
+/* ── TOOLS ── */
+.tools-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.tool-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:16px;
+  text-align:center;
+  transition:all 0.2s;
+  text-decoration:none; color:inherit;
+}
+.tool-card:hover { border-color:rgba(255,255,255,0.12); transform:translateY(-3px); }
+.tool-icon { font-size:28px; margin-bottom:8px; display:block; }
+.tool-name { font-size:13px; font-weight:700; color:var(--white); margin-bottom:4px; }
+.tool-desc { font-size:11px; color:var(--muted); }
+.tool-free { font-size:10px; font-weight:700; color:var(--green); margin-top:6px; }
+
+/* ── FOOTER ── */
+footer {
+  padding:32px 0 48px;
+  border-top:1px solid var(--border);
+  text-align:center;
+}
+.footer-credit {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--muted); letter-spacing:1px;
+}
+.footer-credit a { color:var(--red-light); text-decoration:none; }
+
+/* ── PROGRESS ── */
+.progress-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  height:3px; background:rgba(255,255,255,0.05); z-index:200;
+}
+.progress-fill { height:100%; background:var(--red); width:0%; transition:width 0.1s; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)}  to{opacity:1;transform:translateY(0)} }
+.fade-up { animation:fadeUp 0.5s ease both; }
+.fade-up:nth-child(1){animation-delay:0.05s}
+.fade-up:nth-child(2){animation-delay:0.1s}
+.fade-up:nth-child(3){animation-delay:0.15s}
+.fade-up:nth-child(4){animation-delay:0.2s}
+.fade-up:nth-child(5){animation-delay:0.25s}
+.fade-up:nth-child(6){animation-delay:0.3s}
+
+@media(max-width:640px){
+  .tips-grid{grid-template-columns:1fr}
+  .tools-grid{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:52px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<header>
+  <div class="header-inner">
+    <span class="header-logo">SUDAN CYBER SAFETY</span>
+    <span class="header-badge">v1.0 — 2025 — AR/EN</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" style="border:none;">
+    <div class="hero-tag">🇸🇩 دليل الأمان الرقمي — السودان</div>
+    <h1>CYBER<br><span>SAFETY</span><br>GUIDE</h1>
+    <p class="hero-sub">
+      دليل عملي شامل لحماية نفسك رقمياً في السودان —
+      مصمم للعاملين الإنسانيين، الصحفيين، والمجتمعات المتضررة
+    </p>
+    <div class="hero-audiences">
+      <span class="audience-chip chip-red">🏥 العاملون الإنسانيون / NGO Staff</span>
+      <span class="audience-chip chip-amber">📰 الصحفيون والناشطون</span>
+      <span class="audience-chip chip-blue">👥 المجتمعات المتضررة</span>
+    </div>
+  </section>
+
+  <!-- ALERT -->
+  <div class="alert">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <strong>لماذا هذا الدليل مهم؟</strong><br>
+      في بيئات النزاع، البيانات الرقمية قد تعرض أرواحاً للخطر. حماية هاتفك وبياناتك ليست رفاهية — بل ضرورة. هذا الدليل يغطي أهم التهديدات وكيف تتجنبها بأدوات مجانية.
+    </div>
+  </div>
+
+  <!-- SECTION 1: THREATS -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title-wrap">
+        <div class="section-title">التهديدات الشائعة / Common Threats</div>
+        <div class="section-subtitle">ما الذي يجب أن تعرفه وتتجنبه</div>
+      </div>
+    </div>
+    <div class="threats">
+      <div class="threat-card fade-up">
+        <div class="threat-level level-critical">🎣</div>
+        <div>
+          <div class="threat-name">التصيد الاحتيالي — Phishing</div>
+          <div class="threat-desc">رسائل واتساب أو إيميل تبدو من منظمات إنسانية أو جهات حكومية تطلب بياناتك أو تحتوي على روابط خطيرة. شائعة جداً في السودان حالياً.</div>
+          <span class="threat-tip tip-red">⚠️ حرج للغاية — لا تضغط أي رابط مجهول</span>
+        </div>
+      </div>
+      <div class="threat-card fade-up">
+        <div class="threat-level level-critical">📱</div>
+        <div>
+          <div class="threat-name">اختراق الهاتف — Device Compromise</div>
+          <div class="threat-desc">برامج تجسس تُنصَّب عند فتح ملفات PDF أو APK مجهولة. قد تتيح للمهاجم الوصول لكاميرتك وميكروفونك وملفاتك.</div>
+          <span class="threat-tip tip-red">⚠️ حرج — لا تفتح ملفات من مصادر غير موثوقة</span>
+        </div>
+      </div>
+      <div class="threat-card fade-up">
+        <div class="threat-level level-high">🔓</div>
+        <div>
+          <div class="threat-name">كلمات المرور الضعيفة — Weak Passwords</div>
+          <div class="threat-desc">استخدام نفس الباسورد في أكثر من حساب أو كلمات سهلة التخمين. من أكثر أسباب اختراق الحسابات شيوعاً.</div>
+          <span class="threat-tip tip-amber">⚡ عالي — غيّر باسورداتك الآن</span>
+        </div>
+      </div>
+      <div class="threat-card fade-up">
+        <div class="threat-level level-high">📡</div>
+        <div>
+          <div class="threat-name">الشبكات العامة — Public WiFi</div>
+          <div class="threat-desc">الاتصال بشبكات واي فاي مجهولة في المخيمات أو المراكز العامة قد يعرض بياناتك للاعتراض.</div>
+          <span class="threat-tip tip-amber">⚡ عالي — استخدم VPN دائماً</span>
+        </div>
+      </div>
+      <div class="threat-card fade-up">
+        <div class="threat-level level-medium">💾</div>
+        <div>
+          <div class="threat-name">فقدان البيانات — Data Loss</div>
+          <div class="threat-desc">عدم وجود نسخ احتياطية لبيانات المستفيدين أو الوثائق المهمة. في بيئات النزاع، الأجهزة قد تُفقد أو تُصادر.</div>
+          <span class="threat-tip tip-blue">ℹ️ متوسط — عمل backup أسبوعي</span>
+        </div>
+      </div>
+      <div class="threat-card fade-up">
+        <div class="threat-level level-medium">🕵️</div>
+        <div>
+          <div class="threat-name">المراقبة الرقمية — Surveillance</div>
+          <div class="threat-desc">تتبع النشاط الرقمي والموقع الجغرافي. مهم خصوصاً للصحفيين والناشطين والعاملين في مناطق حساسة.</div>
+          <span class="threat-tip tip-blue">ℹ️ متوسط — استخدم Signal وVPN</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: CHECKLIST -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title-wrap">
+        <div class="section-title">قائمة الحماية الأساسية / Security Checklist</div>
+        <div class="section-subtitle">اضغط على كل بند بعد تطبيقه</div>
+      </div>
+    </div>
+    <div class="checklist" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>فعّل قفل الشاشة بالبصمة أو PIN قوي (6+ أرقام)</strong>أول خط دفاع إذا فُقد هاتفك أو صودر</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>فعّل التحقق بخطوتين (2FA) على Gmail وWhatsApp</strong>يمنع الوصول لحسابك حتى لو سُرق الباسورد</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>ثبّت تطبيق Signal للتواصل الحساس</strong>تشفير كامل من طرف لطرف — مجاني ومتاح للأندرويد والآيفون</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>استخدم VPN موثوق (Proton VPN مجاني)</strong>يحمي بياناتك على الشبكات العامة ويتجاوز الحجب</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>لا تفتح روابط من أرقام مجهولة على واتساب</strong>حتى لو ادّعت أنها من منظمة UNHCR أو WFP</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>احفظ نسخة احتياطية أسبوعية لبيانات العمل</strong>Google Drive المشفّر أو USB محفوظ في مكان آمن</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>حذف بيانات المستفيدين من الهاتف بعد الرفع</strong>لا تحتفظ ببيانات حساسة على الهاتف أكثر من اللازم</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text"><strong>حدّث تطبيقاتك ونظام التشغيل بانتظام</strong>التحديثات تسد الثغرات الأمنية المعروفة</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: TIPS -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title-wrap">
+        <div class="section-title">نصائح حسب الفئة / Tips by Audience</div>
+        <div class="section-subtitle">إرشادات مخصصة لكل جمهور</div>
+      </div>
+    </div>
+    <div class="tips-grid">
+      <div class="tip-card fade-up">
+        <span class="tip-card-icon">🏥</span>
+        <div class="tip-card-title">العاملون الإنسانيون</div>
+        <div class="tip-card-desc">لا تخزّن أسماء المستفيدين مع أرقام هواتفهم في نفس الملف. استخدم أكواداً بدل الأسماء الحقيقية في البيانات الميدانية. فعّل قفل التطبيقات.</div>
+        <div class="tip-card-action">→ بروتوكول حماية البيانات GDPR</div>
+      </div>
+      <div class="tip-card fade-up">
+        <span class="tip-card-icon">📰</span>
+        <div class="tip-card-title">الصحفيون والناشطون</div>
+        <div class="tip-card-desc">استخدم Signal لمصادرك. أوقف تشغيل الموقع الجغرافي عند التصوير. احذف الميتاداتا من الصور قبل النشر. استخدم Tor Browser للتصفح الحساس.</div>
+        <div class="tip-card-action">→ دليل EFF للصحفيين</div>
+      </div>
+      <div class="tip-card fade-up">
+        <span class="tip-card-icon">👥</span>
+        <div class="tip-card-title">المجتمعات المتضررة</div>
+        <div class="tip-card-desc">لا تشارك موقعك مع جهات مجهولة. احذر من الروابط التي تعد بمساعدات. اتصل بمنظمة موثوقة مباشرة إذا شككت في أي رسالة.</div>
+        <div class="tip-card-action">→ UNHCR Sudan: unhcr.org/sudan</div>
+      </div>
+      <div class="tip-card fade-up">
+        <span class="tip-card-icon">🔐</span>
+        <div class="tip-card-title">حماية الأجهزة المشتركة</div>
+        <div class="tip-card-desc">في مراكز الخدمة، لا تحفظ كلمات المرور في المتصفح. سجّل الخروج دائماً. امسح سجل التصفح بعد الانتهاء. لا تترك الجهاز بلا رقابة.</div>
+        <div class="tip-card-action">→ تنظيف الجهاز بعد كل استخدام</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: TOOLS -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title-wrap">
+        <div class="section-title">أدوات مجانية موصى بها / Free Tools</div>
+        <div class="section-subtitle">كلها مجانية وتعمل في بيئات الإنترنت البطيء</div>
+      </div>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card fade-up">
+        <span class="tool-icon">💬</span>
+        <div class="tool-name">Signal</div>
+        <div class="tool-desc">تواصل مشفر بالكامل — بديل واتساب الآمن</div>
+        <div class="tool-free">✓ مجاني تماماً</div>
+      </div>
+      <div class="tool-card fade-up">
+        <span class="tool-icon">🛡️</span>
+        <div class="tool-name">Proton VPN</div>
+        <div class="tool-desc">VPN مجاني وآمن — يحمي اتصالك ويتجاوز الحجب</div>
+        <div class="tool-free">✓ نسخة مجانية متاحة</div>
+      </div>
+      <div class="tool-card fade-up">
+        <span class="tool-icon">🔑</span>
+        <div class="tool-name">Bitwarden</div>
+        <div class="tool-desc">مدير كلمات مرور مشفر ومفتوح المصدر</div>
+        <div class="tool-free">✓ مجاني تماماً</div>
+      </div>
+      <div class="tool-card fade-up">
+        <span class="tool-icon">☁️</span>
+        <div class="tool-name">Proton Drive</div>
+        <div class="tool-desc">تخزين سحابي مشفر للملفات الحساسة</div>
+        <div class="tool-free">✓ 1GB مجاناً</div>
+      </div>
+      <div class="tool-card fade-up">
+        <span class="tool-icon">🌐</span>
+        <div class="tool-name">Tor Browser</div>
+        <div class="tool-desc">تصفح مجهول الهوية للمواقف الحساسة جداً</div>
+        <div class="tool-free">✓ مجاني ومفتوح المصدر</div>
+      </div>
+      <div class="tool-card fade-up">
+        <span class="tool-icon">🖼️</span>
+        <div class="tool-name">ExifEraser</div>
+        <div class="tool-desc">يحذف بيانات الموقع والميتاداتا من الصور</div>
+        <div class="tool-free">✓ مجاني للأندرويد</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: EMERGENCY -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title-wrap">
+        <div class="section-title">بروتوكول الطوارئ / Emergency Protocol</div>
+        <div class="section-subtitle">ماذا تفعل إذا اعتقدت أن جهازك اختُرق</div>
+      </div>
+    </div>
+    <div class="emergency-box">
+      <div class="emergency-title">⚠️ تم اختراق جهازك؟</div>
+      <div class="emergency-sub">اتبع هذه الخطوات فوراً بالترتيب</div>
+      <div class="emergency-steps">
+        <div class="emergency-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>افصل الإنترنت فوراً</strong>أوقف الواي فاي والبيانات لمنع أي اختراق إضافي</div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>غيّر كلمات المرور من جهاز آخر</strong>ابدأ بالإيميل ثم واتساب ثم باقي الحسابات</div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>أخطر مشرفك أو مسؤول IT في منظمتك</strong>لا تتعامل مع الموقف بمفردك إذا كانت بيانات مستفيدين متأثرة</div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>وثّق ما حدث</strong>تاريخ، نوع الرسالة أو الملف المشبوه، الحسابات المتأثرة</div>
+        </div>
+        <div class="emergency-step">
+          <div class="step-num">5</div>
+          <div class="step-text"><strong>أعد تهيئة الجهاز (Factory Reset) إذا لزم</strong>بعد حفظ النسخة الاحتياطية على جهاز نظيف</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p class="footer-credit">
+      أعدّه: <a href="https://github.com/E9048">Elyas Muhammad Yahya</a> —
+      Humanitarian IT Specialist · Port Sudan 🇸🇩 ·
+      <a href="https://e9048.github.io/humanitarian-it-portfolio/">Portfolio</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress').style.width = scrolled + '%';
+});
+
+// Checklist toggle
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const box = el.querySelector('.check-box');
+  if (el.classList.contains('checked')) {
+    box.textContent = '✓';
+  } else {
+    box.textContent = '✓';
+  }
+}
+</script>
+</body>
+</html>
