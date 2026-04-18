@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGO Digital Readiness — تقييم الجاهزية الرقمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #7c6af7;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(0,212,170,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(124,106,247,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,107,53,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .hero {
+    text-align: center;
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,212,170,0.12);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .progress-label {
+    font-size: 0.82rem;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  /* Section Card */
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .section-title { font-size: 1.1rem; font-weight: 700; }
+  .section-desc  { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* Question */
+  .question {
+    margin-bottom: 1.6rem;
+  }
+
+  .question label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .question label span {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(0,212,170,0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    margin-left: 0.5rem;
+  }
+
+  /* Radio options */
+  .options {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+  }
+
+  .option:hover {
+    border-color: rgba(0,212,170,0.3);
+    background: rgba(0,212,170,0.05);
+  }
+
+  .option input[type="radio"] { display: none; }
+
+  .option.selected {
+    border-color: var(--accent);
+    background: rgba(0,212,170,0.1);
+    color: #fff;
+  }
+
+  .option-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .option.selected .option-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,170,0.2);
+  }
+
+  /* Buttons */
+  .btn-wrap { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+
+  .btn {
+    padding: 0.85rem 2.5rem;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #00b894);
+    color: #0a0e1a;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,212,170,0.35);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* Report */
+  .report { animation: fadeUp 0.5s ease both; }
+
+  .report-hero {
+    text-align: center;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(124,106,247,0.1));
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+  }
+
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    position: relative;
+  }
+
+  .score-circle svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .score-number {
+    font-size: 2.2rem;
+    font-weight: 900;
+    z-index: 1;
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    z-index: 1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .maturity-badge {
+    display: inline-block;
+    padding: 0.4rem 1.5rem;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media(max-width:600px) { .report-grid { grid-template-columns: 1fr; } }
+
+  .report-metric {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+  }
+
+  .metric-name {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+  }
+
+  .metric-bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+  }
+
+  .metric-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+  }
+
+  .metric-score {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* Recommendations */
+  .recs-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .rec-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .rec-priority {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .rec-content h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .rec-content p  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  .ai-section {
+    background: linear-gradient(135deg, rgba(124,106,247,0.08), rgba(0,212,170,0.05));
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .ai-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .ai-dots span {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    animation: dot 1.2s infinite;
+  }
+  .ai-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot {
+    0%,80%,100% { transform: scale(0.6); opacity: 0.3; }
+    40%          { transform: scale(1);   opacity: 1; }
+  }
+
+  .ai-text { font-size: 0.88rem; line-height: 1.8; color: var(--text); }
+  .ai-text p { margin-bottom: 0.8rem; }
+
+  .hidden { display: none; }
+
+  .cta-section {
+    text-align: center;
+    padding: 2.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    margin-top: 2rem;
+  }
+
+  .cta-section h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .cta-section p  { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+  /* Steps indicator */
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+  }
+
+  .step-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+  .step-dot.done   { background: rgba(0,212,170,0.4); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero" id="heroSection">
+    <div class="hero-badge">🌍 أداة مجانية للمنظمات غير الحكومية</div>
+    <h1>تقييم الجاهزية الرقمية<br>لمنظمتك</h1>
+    <p>أجب على ٢٠ سؤالاً في ٥ دقائق واحصل على تقرير تفصيلي بتوصيات مخصصة لمنظمتك</p>
+    <button class="btn btn-primary" onclick="startAssessment()">ابدأ التقييم الآن ←</button>
+  </div>
+
+  <!-- ASSESSMENT -->
+  <div id="assessmentSection" class="hidden">
+    <div class="progress-wrap">
+      <span class="progress-label" id="progressText">القسم 1 من 4</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+      <span class="progress-label" id="progressPct">0%</span>
+    </div>
+
+    <div class="steps" id="stepDots"></div>
+
+    <div id="sectionContainer"></div>
+
+    <div class="btn-wrap">
+      <button class="btn btn-secondary" id="btnBack" onclick="goBack()">← رجوع</button>
+      <button class="btn btn-primary"   id="btnNext" onclick="goNext()">التالي →</button>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div id="reportSection" class="hidden report"></div>
+
+</div>
+
+<script>
+const sections = [
+  {
+    id: "infrastructure",
+    title: "البنية التحتية الرقمية",
+    desc: "الأجهزة، الاتصال بالإنترنت، والبيئة التقنية",
+    icon: "🖥️",
+    color: "#00d4aa",
+    questions: [
+      {
+        id: "q1", text: "ما نسبة الموظفين الذين يمتلكون أجهزة حاسوب مناسبة للعمل؟",
+        options: ["أقل من ٣٠٪", "٣٠٪ - ٦٠٪", "٦٠٪ - ٩٠٪", "أكثر من ٩٠٪"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q2", text: "كيف تصف جودة اتصال الإنترنت في مكتبكم؟",
+        options: ["ضعيف / غير موثوق", "مقبول مع انقطاعات متكررة", "جيد في معظم الأوقات", "ممتاز وموثوق تماماً"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q3", text: "هل تستخدمون خدمات التخزين السحابي (Google Drive, OneDrive, إلخ)؟",
+        options: ["لا نستخدم أي خدمات سحابية", "نستخدم أحياناً بشكل غير منظم", "نستخدم بانتظام لبعض الملفات", "نعتمد عليها بالكامل مع سياسة واضحة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q4", text: "هل لديكم سياسة للأمن السيبراني وحماية البيانات؟",
+        options: ["لا توجد أي سياسة", "نعرف أهميتها لكن لم نطبق شيئاً", "لدينا بعض الإجراءات غير الرسمية", "لدينا سياسة موثقة ومطبقة"],
+        scores: [1, 2, 3, 4]
+      }
+    ]
+  },
+  {
+    id: "data",
+    title: "إدارة البيانات والمعلومات",
+    desc: "كيفية جمع البيانات وتنظيمها واستخدامها",
+    icon: "📊",
+    color: "#7c6af7",
+    questions: [
+      {
+        id: "q5", text: "كيف تجمعون بيانات المستفيدين والأنشطة؟",
+        options: ["بشكل يدوي على ورق فقط", "Excel غير منظم", "Excel أو Google Sheets منظم", "نظام متخصص لإدارة البيانات"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q6", text: "هل تستخدمون البيانات لاتخاذ القرارات وتحسين البرامج؟",
+        options: ["نادراً، القرارات تعتمد على الخبرة فقط", "أحياناً عند الضرورة", "نراجع البيانات دورياً", "البيانات أساس كل قراراتنا الاستراتيجية"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q7", text: "هل لديكم نظام CRM أو قاعدة بيانات للمستفيدين والمتبرعين؟",
+        options: ["لا يوجد", "Excel/Sheets فقط", "نظام CRM بسيط", "نظام CRM متكامل ومحدّث"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q8", text: "هل تنتجون تقارير وتحليلات دورية عن أنشطتكم؟",
+        options: ["فقط عند طلب الجهات المانحة", "تقارير سنوية أساسية", "تقارير فصلية منتظمة", "لوحة بيانات حية وتقارير تلقائية"],
+        scores: [1, 2, 3, 4]
+      }
+    ]
+  },
+  {
+    id: "communication",
+    title: "التواصل والحضور الرقمي",
+    desc: "موقعكم الإلكتروني، وسائل التواصل، والتسويق",
+    icon: "📣",
+    color: "#ff6b35",
+    questions: [
+      {
+        id: "q9", text: "ما حالة موقعكم الإلكتروني؟",
+        options: ["لا يوجد موقع", "موقع قديم لا يُحدَّث", "موقع جيد لكن يحتاج تحديث", "موقع حديث ومحدَّث بانتظام"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q10", text: "كيف تديرون حضوركم على وسائل التواصل الاجتماعي؟",
+        options: ["لا وجود لنا على السوشيال ميديا", "حسابات موجودة لكن نادرة التحديث", "ننشر بانتظام لكن بدون استراتيجية", "استراتيجية محتوى واضحة وجداول نشر منتظمة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q11", text: "هل تستخدمون التسويق الرقمي لجمع التبرعات والشراكات؟",
+        options: ["لا نستخدم أي تسويق رقمي", "نجرب أحياناً بدون خطة", "نستخدم بعض الأدوات بانتظام", "استراتيجية تسويق رقمي متكاملة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q12", text: "هل لديكم قائمة بريد إلكتروني وتستخدمون email marketing؟",
+        options: ["لا توجد قائمة بريدية", "قائمة موجودة لكن نادراً ما نرسل", "نرسل نشرات دورية بانتظام", "تسويق بريدي احترافي مع تقسيم الجمهور"],
+        scores: [1, 2, 3, 4]
+      }
+    ]
+  },
+  {
+    id: "capacity",
+    title: "قدرات الفريق والثقافة الرقمية",
+    desc: "مهارات الفريق وجاهزيتهم للتحول الرقمي",
+    icon: "👥",
+    color: "#f59e0b",
+    questions: [
+      {
+        id: "q13", text: "ما مستوى المهارات الرقمية العامة لفريقكم؟",
+        options: ["مهارات أساسية جداً", "قادرون على الأساسيات", "مهارات جيدة في معظم الأدوات", "فريق متمكن رقمياً بشكل ممتاز"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q14", text: "هل تستثمرون في تدريب الفريق على الأدوات الرقمية؟",
+        options: ["لا يوجد تدريب", "تدريب نادر عند الحاجة الملحة", "تدريب دوري بعض الأحيان", "خطة تدريب سنوية منتظمة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q15", text: "هل القيادة في منظمتكم تدعم وتشجع التحول الرقمي؟",
+        options: ["مقاومة للتغيير الرقمي", "محايدة / لا تعطيه أولوية", "تدعمه لكن بدون خطة واضحة", "التحول الرقمي أولوية استراتيجية للقيادة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q16", text: "هل لديكم موظف أو مسؤول متخصص في التقنية والرقمنة؟",
+        options: ["لا أحد مسؤول عن التقنية", "شخص يتولاها جزئياً مع مهام أخرى", "موظف مخصص لكن بدون دعم كافٍ", "فريق تقني أو مسؤول تقنية بكامل الوقت"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q17", text: "هل تستخدمون أدوات التعاون عن بُعد (Zoom, Slack, Teams, إلخ)؟",
+        options: ["لا نستخدمها أبداً", "نستخدمها أحياناً بشكل غير رسمي", "نستخدمها بانتظام لبعض الأنشطة", "هي الطريقة الأساسية لتعاوننا"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q18", text: "ما حجم ميزانيتكم المخصصة للتقنية والتحول الرقمي؟",
+        options: ["لا ميزانية مخصصة", "أقل من ٢٪ من الميزانية العامة", "٢٪ - ٥٪ من الميزانية العامة", "أكثر من ٥٪ مع خطة استثمار واضحة"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q19", text: "هل لديكم خطة رقمية أو استراتيجية تحول رقمي موثقة؟",
+        options: ["لا توجد أي خطة", "أفكار غير موثقة في أذهان القيادة", "خطة أولية غير مكتملة", "خطة رقمية موثقة ومراجعة سنوياً"],
+        scores: [1, 2, 3, 4]
+      },
+      {
+        id: "q20", text: "كيف تقيّم استعداد منظمتكم للتعامل مع الأزمات رقمياً (كوفيد مثلاً)؟",
+        options: ["غير مستعدين أبداً", "مستعدون بشكل محدود", "مستعدون للأساسيات", "لدينا خطة استمرارية رقمية كاملة"],
+        scores: [1, 2, 3, 4]
+      }
+    ]
+  }
+];
+
+let currentSection = 0;
+let answers = {};
+
+function startAssessment() {
+  document.getElementById('heroSection').classList.add('hidden');
+  document.getElementById('assessmentSection').classList.remove('hidden');
+  buildStepDots();
+  renderSection(0);
+}
+
+function buildStepDots() {
+  const wrap = document.getElementById('stepDots');
+  wrap.innerHTML = sections.map((_, i) => `<div class="step-dot" id="dot${i}"></div>`).join('');
+}
+
+function updateProgress() {
+  const total = sections.length;
+  const pct = Math.round((currentSection / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressText').textContent = `القسم ${currentSection + 1} من ${total}`;
+  sections.forEach((_, i) => {
+    const dot = document.getElementById('dot' + i);
+    dot.className = 'step-dot' + (i === currentSection ? ' active' : i < currentSection ? ' done' : '');
+  });
+}
+
+function renderSection(idx) {
+  const sec = sections[idx];
+  updateProgress();
+  document.getElementById('btnBack').disabled = idx === 0;
+
+  const isLast = idx === sections.length - 1;
+  document.getElementById('btnNext').textContent = isLast ? 'عرض التقرير 📊' : 'التالي →';
+
+  const html = `
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-icon" style="background:${sec.color}18; color:${sec.color}">${sec.icon}</div>
+        <div>
+          <div class="section-title">${sec.title}</div>
+          <div class="section-desc">${sec.desc}</div>
+        </div>
+      </div>
+      ${sec.questions.map(q => `
+        <div class="question" id="qwrap_${q.id}">
+          <label>${q.text}</label>
+          <div class="options">
+            ${q.options.map((opt, oi) => `
+              <div class="option ${answers[q.id] === oi ? 'selected' : ''}" onclick="selectOption('${q.id}', ${oi}, this)">
+                <div class="option-dot"></div>
+                <span>${opt}</span>
+                <input type="radio" name="${q.id}" value="${oi}">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('sectionContainer').innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectOption(qId, optIdx, el) {
+  answers[qId] = optIdx;
+  document.querySelectorAll(`[onclick^="selectOption('${qId}'"]`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function goNext() {
+  const sec = sections[currentSection];
+  const unanswered = sec.questions.filter(q => answers[q.id] === undefined);
+  if (unanswered.length > 0) {
+    unanswered.forEach(q => {
+      const wrap = document.getElementById('qwrap_' + q.id);
+      wrap.style.outline = '2px solid #ff6b35';
+      wrap.style.borderRadius = '10px';
+      setTimeout(() => wrap.style.outline = '', 2000);
+    });
+    return;
+  }
+
+  if (currentSection < sections.length - 1) {
+    currentSection++;
+    renderSection(currentSection);
+  } else {
+    generateReport();
+  }
+}
+
+function goBack() {
+  if (currentSection > 0) {
+    currentSection--;
+    renderSection(currentSection);
+  }
+}
+
+function getScores() {
+  const sectionScores = sections.map(sec => {
+    const total = sec.questions.reduce((sum, q) => {
+      const ans = answers[q.id];
+      return sum + (ans !== undefined ? q.scores[ans] : 0);
+    }, 0);
+    const max = sec.questions.length * 4;
+    return { id: sec.id, title: sec.title, icon: sec.icon, color: sec.color, score: total, max, pct: Math.round((total / max) * 100) };
+  });
+  const totalScore = sectionScores.reduce((s, sc) => s + sc.score, 0);
+  const totalMax   = sectionScores.reduce((s, sc) => s + sc.max, 0);
+  const totalPct   = Math.round((totalScore / totalMax) * 100);
+  return { sectionScores, totalPct };
+}
+
+function getMaturity(pct) {
+  if (pct < 30) return { label: "مرحلة التأسيس", color: "#ef4444", bg: "rgba(239,68,68,0.15)" };
+  if (pct < 55) return { label: "مرحلة النمو",   color: "#f59e0b", bg: "rgba(245,158,11,0.15)" };
+  if (pct < 75) return { label: "مرحلة التطور",  color: "#00d4aa", bg: "rgba(0,212,170,0.15)" };
+  return               { label: "مرحلة الريادة", color: "#7c6af7", bg: "rgba(124,106,247,0.15)" };
+}
+
+function getRecommendations(sectionScores, totalPct) {
+  const recs = [];
+  sectionScores.forEach(sec => {
+    if (sec.pct < 50) {
+      const tips = {
+        infrastructure: { title: "تطوير البنية التحتية الرقمية", body: "ابدأ بتوفير أجهزة مناسبة وإنترنت موثوق، وضع سياسة واضحة للأمن السيبراني، وانقل ملفاتكم إلى التخزين السحابي." },
+        data:           { title: "تحسين إدارة البيانات",          body: "اعتمد نظام CRM بسيط مثل Airtable أو HubSpot المجاني، وحدد مؤشرات أداء واضحة لكل برنامج." },
+        communication:  { title: "تعزيز الحضور الرقمي",           body: "طور موقعكم الإلكتروني، وضع استراتيجية محتوى لوسائل التواصل، وابدأ ببناء قائمة بريدية." },
+        capacity:       { title: "بناء قدرات الفريق الرقمية",     body: "استثمر في تدريب الفريق، عيّن مسؤول تقنية، وضع خطة رقمية سنوية واضحة." }
+      };
+      if (tips[sec.id]) recs.push({ priority: recs.length < 2 ? "عاجل" : "مهم", color: recs.length < 2 ? "#ef4444" : "#f59e0b", bg: recs.length < 2 ? "rgba(239,68,68,0.15)" : "rgba(245,158,11,0.15)", ...tips[sec.id] });
+    }
+  });
+  if (totalPct >= 70) recs.push({ priority: "تطوير", color: "#7c6af7", bg: "rgba(124,106,247,0.15)", title: "الارتقاء لمستوى الريادة الرقمية", body: "أنتم في مستوى متقدم! ركزوا على الأتمتة، الذكاء الاصطناعي في تحليل البيانات، وشاركوا خبرتكم مع المنظمات الأخرى." });
+  if (recs.length === 0) recs.push({ priority: "جيد", color: "#00d4aa", bg: "rgba(0,212,170,0.15)", title: "الحفاظ على المستوى الحالي وتطويره", body: "مستوى جيد! راجعوا خطتكم الرقمية كل ٦ أشهر وتابعوا أحدث الأدوات المناسبة لمنظمات المجتمع المدني." });
+  return recs;
+}
+
+function generateReport() {
+  document.getElementById('assessmentSection').classList.add('hidden');
+  const { sectionScores, totalPct } = getScores();
+  const maturity = getMaturity(totalPct);
+  const recs = getRecommendations(sectionScores, totalPct);
+  const circumference = 2 * Math.PI * 52;
+  const offset = circumference - (totalPct / 100) * circumference;
+
+  const reportHtml = `
+    <div class="report-hero">
+      <div class="score-circle">
+        <svg viewBox="0 0 120 120" width="120" height="120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="${maturity.color}" stroke-width="8"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+            stroke-linecap="round" style="transition:stroke-dashoffset 1s ease"/>
+        </svg>
+        <div class="score-number" style="color:${maturity.color}">${totalPct}</div>
+        <div class="score-label">من ١٠٠</div>
+      </div>
+      <div class="maturity-badge" style="background:${maturity.bg}; color:${maturity.color}">${maturity.label}</div>
+      <p style="color:var(--muted); font-size:0.88rem; max-width:420px; margin:0 auto">
+        تقريركم الرقمي جاهز! اطلعوا على نتائج كل محور والتوصيات المخصصة لمنظمتكم أدناه.
+      </p>
+    </div>
+
+    <div class="report-grid">
+      ${sectionScores.map(sec => `
+        <div class="report-metric">
+          <div class="metric-name">${sec.icon} ${sec.title}</div>
+          <div class="metric-bar-bg">
+            <div class="metric-bar-fill" style="width:${sec.pct}%; background:${sec.color}"></div>
+          </div>
+          <div class="metric-score" style="color:${sec.color}">${sec.pct}٪</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="recs-title">⚡ التوصيات الأولوية لمنظمتكم</div>
+    ${recs.map(r => `
+      <div class="rec-item">
+        <div class="rec-priority" style="background:${r.bg}; color:${r.color}">${r.priority}</div>
+        <div class="rec-content">
+          <h4>${r.title}</h4>
+          <p>${r.body}</p>
+        </div>
+      </div>
+    `).join('')}
+
+    <div class="ai-section" id="aiSection">
+      <div style="font-size:0.85rem; font-weight:700; color:#a78bfa; margin-bottom:1rem">
+        🤖 تحليل ذكاء اصطناعي مخصص لمنظمتكم
+      </div>
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-dots"><span></span><span></span><span></span></div>
+        جاري تحليل نتائجكم وإنشاء توصيات مخصصة...
+      </div>
+      <div class="ai-text hidden" id="aiText"></div>
+    </div>
+
+    <div class="cta-section">
+      <h3>هل تريدون مساعدة متخصصة؟</h3>
+      <p>يمكننا مساعدة منظمتكم في تطبيق خطة رقمية مخصصة وتدريب فريقكم</p>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة التقرير</button>
+    </div>
+  `;
+
+  const reportSection = document.getElementById('reportSection');
+  reportSection.innerHTML = reportHtml;
+  reportSection.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // AI Analysis
+  generateAIAnalysis(sectionScores, totalPct, maturity.label);
+}
+
+async function generateAIAnalysis(sectionScores, totalPct, maturityLabel) {
+  const summaryLines = sectionScores.map(s => `- ${s.title}: ${s.pct}%`).join('\n');
+  const prompt = `أنت خبير في التحول الرقمي للمنظمات غير الحكومية في العالم العربي. 
+قدِّم تحليلاً موجزاً ومفيداً (٣-٤ فقرات قصيرة) لمنظمة حصلت على النتائج التالية:
+
+المستوى العام: ${totalPct}% (${maturityLabel})
+${summaryLines}
+
+اكتب بالعربية، بأسلوب احترافي وداعم، مع توصية واحدة عملية محددة يمكن تطبيقها خلال ٣٠ يوماً.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+    document.getElementById('aiLoading').classList.add('hidden');
+    const aiTextEl = document.getElementById('aiText');
+    aiTextEl.classList.remove('hidden');
+    aiTextEl.innerHTML = text.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+  } catch (e) {
+    document.getElementById('aiLoading').innerHTML = '<span style="color:var(--muted); font-size:0.82rem">تعذّر تحميل التحليل الآن، يرجى المحاولة لاحقاً.</span>';
+  }
+}
+</script>
+</body>
+</html>
